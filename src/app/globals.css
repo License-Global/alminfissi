@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-calendar .react-datepicker__header {
+  font-size: 1.0em; /* Ingrandisce l'intestazione del calendario */
+}
+
+.custom-calendar .react-datepicker__day,
+.custom-calendar .react-datepicker__day-name,
+.custom-calendar .react-datepicker__time-name {
+  width: 1.5em; /* Aumenta la larghezza dei giorni */
+  line-height: 1.2em; /* Aumenta l'altezza dei giorni */
+  font-size: 1.2em; /* Ingrandisce il testo dei giorni */
+}
+
+.custom-calendar .react-datepicker__current-month,
+.custom-calendar .react-datepicker-time__header,
+.custom-calendar .react-datepicker-year-header {
+  font-size: 1.5em; /* Ingrandisce il testo del mese corrente e dell'anno */
+}
+
+.custom-calendar .react-datepicker__navigation {
+  top: 1em; /* Regola la posizione delle frecce di navigazione */
+}
+
+.custom-calendar .react-datepicker__navigation--previous {
+  border-right-width: 1.5em;
+  border-top-width: 1.5em;
+}
+
+.custom-calendar .react-datepicker__navigation--next {
+  border-left-width: 1.5em;
+  border-top-width: 1.5em;
+}
