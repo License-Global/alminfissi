@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Order {
     activity: {
@@ -35,6 +36,7 @@ type Props = {
 }
 
 const AdminOrderList = (props: Props) => {
+    const router = useRouter();
     return (
 
         <div className="overflow-x-auto">
@@ -48,9 +50,8 @@ const AdminOrderList = (props: Props) => {
                 </thead>
                 <tbody>
                     {props?.ordersData.map((order) => (
-                        <tr className="hover:bg-slate-300 mx-8" key={order._id}>
-                            <td className=' font-bold'>
-                                <Link href={`/modifica-commessa/${order._id}`}>{order.orderName}</Link></td>
+                        <tr onClick={() => router.push(`/modifica-commessa/${order._id}`)} className="hover:bg-slate-300 mx-8 cursor-pointer" key={order._id}>
+                            <td className=' font-bold'>{order.orderName}</td>
                             <td>{order.orderManager}</td>
                             <td>{order.urgency}</td>
                         </tr>
