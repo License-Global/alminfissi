@@ -255,7 +255,7 @@ const AddOrderForm = (props: Props) => {
                         <form method="dialog">
                             <div className='flex gap-4'>
                                 <button className="btn">Annulla</button>
-                                <button onClick={() => handleDelete()} className="btn btn-error">Close</button>
+                                <button onClick={() => handleDelete()} className="btn btn-error">Elimina</button>
                             </div>
                         </form>
                     </div>

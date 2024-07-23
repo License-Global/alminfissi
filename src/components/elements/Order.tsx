@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { status } from '@/utils/enums/status'
 import { IoIosMail } from "react-icons/io";
 import { IoMailOutline } from "react-icons/io5";
-import { differenceInMinutes } from "date-fns";
+import { differenceInMinutes, differenceInHours } from "date-fns";
 import Timer from './Timer';
 import NoteModal from './NoteModal';
 import { changeStatus, completeActivity } from '@/utils/libs/crud';
@@ -222,18 +222,39 @@ const Order = (props: Props) => {
         }
     }
 
+    function getDifferenceInHoursAndMinutesString(date1: any, date2: any) {
+        // Calcola la differenza totale in minuti
+        const totalMinutesDifference = Math.abs(differenceInMinutes(date2, date1));
+
+        // Calcola la differenza in ore intere
+        const hoursDifference = Math.abs(differenceInHours(date2, date1));
+
+        // Calcola i minuti rimanenti
+        const minutesDifference = totalMinutesDifference - (hoursDifference * 60);
+
+        let result = '';
+        if (hoursDifference > 0) {
+            result += `${hoursDifference} ore `;
+        }
+        result += `${minutesDifference} minuti`;
+
+        return result.trim();
+    }
 
     const handleTargetLabel = (expire: string, completed: string | null) => {
         if (completed) {
             if (Math.abs(differenceInMinutes(expire, completed)) < 5) {
-                return (<button onClick={() => console.log(differenceInMinutes(expire, completed))} className=' w-full cursor-default btn rounded-xl btn-info'>OK</button>)
+                return (<button onClick={() => console.log(differenceInHours(expire, completed))} className=' w-full cursor-default btn rounded-xl btn-info'>OK</button>)
             }
             else if (expire > completed) {
-                return (<button className=' w-full cursor-default btn rounded-xl btn-accent'>{"Anticipo di " + Math.abs(differenceInMinutes(expire, completed)) + " minuti"}</button>)
+                return (<button className=' w-full cursor-default btn rounded-xl btn-accent'>Anticipo di {getDifferenceInHoursAndMinutesString(expire, completed)}</button>)
             }
             else if (expire < completed) {
-                return (<button className=' w-full cursor-default btn rounded-xl btn-error'>{"Ritardo di " + Math.abs(differenceInMinutes(expire, completed)) + " minuti"}</button>)
+                return (<button className=' w-full cursor-default btn rounded-xl btn-error'>Ritardo di {getDifferenceInHoursAndMinutesString(expire, completed)}</button>)
             }
+            // else if (expire < completed) {
+            //     return (<button className=' w-full cursor-default btn rounded-xl btn-error'>Ritardo di {Math.abs(differenceInMinutes(expire, completed)) >= 60 ? Math.abs(differenceInHours(expire, completed)) + " H" : Math.abs(differenceInMinutes(expire, completed)) + " m"}</button>)
+            // }
         }
         else {
             return (<Timer targetDate={expire} />)
