@@ -665,7 +665,7 @@ const AddOrderForm = (props: Props) => {
                     </div>
                 </div>
                 <div className='flex justify-center md:justify-end my-4 mr-10 gap-4'>
-                    <p onClick={() => resetFields()} className='btn btn-warning btn-lg rounded-xl'>Annulla</p>
+                    <p onClick={() => resetFields()} className='btn btn-warning btn-lg rounded-xl'>Azzera</p>
                     {
                         props.isEdit ? <button type='submit' className='btn btn-info btn-lg rounded-xl'>Modifica</button> :
                             <button type='submit' className='btn btn-success btn-lg rounded-xl'>Aggiungi</button>
