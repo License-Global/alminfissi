@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { status } from '@/utils/enums/status'
 import { IoIosMail } from "react-icons/io";
 import { IoMailOutline } from "react-icons/io5";
-import { differenceInMinutes, differenceInHours } from "date-fns";
+import { differenceInMinutes, differenceInHours, differenceInCalendarDays, differenceInDays } from "date-fns";
 import Timer from './Timer';
 import NoteModal from './NoteModal';
 import { changeStatus, completeActivity } from '@/utils/libs/crud';
@@ -222,21 +222,28 @@ const Order = (props: Props) => {
         }
     }
 
-    function getDifferenceInHoursAndMinutesString(date1: any, date2: any) {
+    function getDifferenceInDaysHoursAndMinutesString(date1: any, date2: any) {
         // Calcola la differenza totale in minuti
         const totalMinutesDifference = Math.abs(differenceInMinutes(date2, date1));
 
-        // Calcola la differenza in ore intere
-        const hoursDifference = Math.abs(differenceInHours(date2, date1));
+        // Calcola la differenza in giorni interi
+        const daysDifference = Math.abs(differenceInDays(date2, date1));
 
-        // Calcola i minuti rimanenti
-        const minutesDifference = totalMinutesDifference - (hoursDifference * 60);
+        // Calcola la differenza in ore intere rimanenti dopo aver sottratto i giorni
+        const remainingHours = Math.abs(differenceInHours(date2, date1)) - (daysDifference * 24);
 
+        // Calcola i minuti rimanenti dopo aver sottratto i giorni e le ore
+        const remainingMinutes = totalMinutesDifference - (daysDifference * 24 * 60) - (remainingHours * 60);
+
+        // Costruisci la stringa del risultato
         let result = '';
-        if (hoursDifference > 0) {
-            result += `${hoursDifference} ore `;
+        if (daysDifference > 0) {
+            result += `${daysDifference}G `;
         }
-        result += `${minutesDifference} minuti`;
+        if (remainingHours > 0) {
+            result += `${remainingHours}H `;
+        }
+        result += `${remainingMinutes}min `;
 
         return result.trim();
     }
@@ -247,10 +254,10 @@ const Order = (props: Props) => {
                 return (<button onClick={() => console.log(differenceInHours(expire, completed))} className=' w-full cursor-default btn rounded-xl btn-info'>OK</button>)
             }
             else if (expire > completed) {
-                return (<button className=' w-full cursor-default btn rounded-xl btn-accent'>Anticipo di {getDifferenceInHoursAndMinutesString(expire, completed)}</button>)
+                return (<button className=' w-full cursor-default btn rounded-xl btn-accent'>Anticipo di {getDifferenceInDaysHoursAndMinutesString(expire, completed)}</button>)
             }
             else if (expire < completed) {
-                return (<button className=' w-full cursor-default btn rounded-xl btn-error'>Ritardo di {getDifferenceInHoursAndMinutesString(expire, completed)}</button>)
+                return (<button className=' w-full cursor-default btn rounded-xl btn-error'>Ritardo di {getDifferenceInDaysHoursAndMinutesString(expire, completed)}</button>)
             }
             // else if (expire < completed) {
             //     return (<button className=' w-full cursor-default btn rounded-xl btn-error'>Ritardo di {Math.abs(differenceInMinutes(expire, completed)) >= 60 ? Math.abs(differenceInHours(expire, completed)) + " H" : Math.abs(differenceInMinutes(expire, completed)) + " m"}</button>)
