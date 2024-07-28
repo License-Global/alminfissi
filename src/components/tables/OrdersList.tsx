@@ -39,22 +39,29 @@ const OrdersList = () => {
     const [orders, setOrders] = useState<Order[]>([]);
 
     useEffect(() => {
-        fetchOrders();
-    }, []);
-
-    const fetchOrders = () => {
-        axios.get(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}/orders`)
-            .then(function (response) {
-                const sortedOrders = response.data.sort((a: Orders, b: Orders) => {
-                    const priorityOrder: { [key: string]: number } = { 'Bassa': 1, 'Media': 2, 'Alta': 3, 'Urgente': 4 };
-                    return priorityOrder[b.urgency] - priorityOrder[a.urgency]; // Ordine discendente per urgency
+        const fetchOrders = () => {
+            axios.get(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}/orders`)
+                .then(response => {
+                    const sortedOrders = response.data.sort((a: Orders, b: Orders) => {
+                        const priorityOrder: { [key: string]: number } = { 'Bassa': 1, 'Media': 2, 'Alta': 3, 'Urgente': 4 };
+                        return priorityOrder[b.urgency] - priorityOrder[a.urgency]; // Ordine discendente per urgency
+                    });
+                    setOrders(sortedOrders);
+                })
+                .catch(error => {
+                    console.log(error);
                 });
-                setOrders(sortedOrders);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    };
+        };
+
+        // Fetch orders initially
+        fetchOrders();
+
+        // Set interval to fetch orders every minute
+        const intervalId = setInterval(fetchOrders, 30000);
+
+        // Cleanup interval on component unmount
+        return () => clearInterval(intervalId);
+    }, []);
 
     return (
         <div>

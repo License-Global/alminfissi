@@ -1,10 +1,9 @@
 'use client'
-import React, { useState, FormEvent } from 'react'
+import React, { useState, FormEvent, useEffect } from 'react'
 import ReactDatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { workers } from '@/utils/enums/workers';
 import axios from 'axios';
 import Order from '../elements/Order';
 import { registerLocale } from 'react-datepicker';
@@ -17,7 +16,24 @@ type Props = {
     isEdit: boolean;
 }
 
+type Worker = {
+    workerName: string;
+};
+
 const AddOrderForm = (props: Props) => {
+    const [workers, setWorkers] = useState<Worker[]>([])
+
+    useEffect(() => {
+        axios.get(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}/personale`)
+            .then(response => {
+                setWorkers(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, [])
+
+
     // Date states
     const [ricACCDate, setRicACCDate] = useState(props.isEdit != true ? new Date() : new Date(props.orderData?.activity.ricezioneAccessori.expire!));
     const [ricAllDate, setRicAllDate] = useState(props.isEdit != true ? new Date() : new Date(props.orderData?.activity.ricezioneAlluminio.expire!));
@@ -314,7 +330,7 @@ const AddOrderForm = (props: Props) => {
                             </div>
                             <select value={orderManager} onChange={e => setOrderManager(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                 <option value="" disabled hidden className='text-lg'>Seleziona responsabile</option>
-                                {workers.map((worker) => (<option className='text-lg' key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                {workers.map((worker) => (<option className='text-lg' key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                             </select>
                         </label>
 
@@ -335,7 +351,7 @@ const AddOrderForm = (props: Props) => {
                                     <td>
                                         <select value={RACCres} onChange={e => setRACCres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                             <option value="" disabled hidden>Seleziona responsabile</option>
-                                            {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                            {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
                                 </tr>
@@ -347,7 +363,7 @@ const AddOrderForm = (props: Props) => {
                                     <td>
                                         <select value={RAres} onChange={e => setRAres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                             <option value="" disabled hidden>Seleziona responsabile</option>
-                                            {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                            {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
                                 </tr>
@@ -359,7 +375,7 @@ const AddOrderForm = (props: Props) => {
                                     <td>
                                         <select value={RVres} onChange={e => setRVres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                             <option value="" disabled hidden>Seleziona responsabile</option>
-                                            {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                            {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
                                 </tr>
@@ -371,7 +387,7 @@ const AddOrderForm = (props: Props) => {
                                     <td>
                                         <select value={TAGRes} onChange={e => setTAGRes(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                             <option value="" disabled hidden >Seleziona responsabile</option>
-                                            {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                            {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
                                 </tr>
@@ -383,7 +399,7 @@ const AddOrderForm = (props: Props) => {
                                     <td>
                                         <select value={LAVres} onChange={e => setLAVres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                             <option value="" disabled hidden >Seleziona responsabile</option>
-                                            {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                            {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
                                 </tr>
@@ -395,7 +411,7 @@ const AddOrderForm = (props: Props) => {
                                     <td>
                                         <select value={ASSres} onChange={e => setASSres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                             <option value="" disabled hidden >Seleziona responsabile</option>
-                                            {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                            {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
                                 </tr>
@@ -407,7 +423,7 @@ const AddOrderForm = (props: Props) => {
                                     <td>
                                         <select value={IVres} onChange={e => setIVres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                             <option value="" disabled hidden >Seleziona responsabile</option>
-                                            {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                            {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
                                 </tr>
@@ -419,7 +435,7 @@ const AddOrderForm = (props: Props) => {
                                     <td>
                                         <select value={IMres} onChange={e => setIMres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                             <option value="" disabled hidden >Seleziona responsabile</option>
-                                            {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                            {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
                                 </tr>
@@ -431,7 +447,7 @@ const AddOrderForm = (props: Props) => {
                                     <td>
                                         <select value={TRAres} onChange={e => setTRAres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                             <option value="" disabled hidden >Seleziona responsabile</option>
-                                            {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                            {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
                                 </tr>
@@ -443,7 +459,7 @@ const AddOrderForm = (props: Props) => {
                                     <td>
                                         <select value={DELres} onChange={e => setDELres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                             <option value="" disabled hidden >Seleziona responsabile</option>
-                                            {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                            {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
                                 </tr>
@@ -470,7 +486,7 @@ const AddOrderForm = (props: Props) => {
                                             <td>
                                                 <select value={RAres} onChange={e => setRAres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                                     <option disabled>Seleziona responsabile</option>
-                                                    {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                                    {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                                 </select>
                                             </td>
                                         </tr>
@@ -493,7 +509,7 @@ const AddOrderForm = (props: Props) => {
                                             <td>
                                                 <select value={RVres} onChange={e => setRVres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                                     <option disabled>Seleziona responsabile</option>
-                                                    {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                                    {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                                 </select>
                                             </td>
                                         </tr>
@@ -516,7 +532,7 @@ const AddOrderForm = (props: Props) => {
                                             <td>
                                                 <select value={TAGRes} onChange={e => setTAGRes(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                                     <option disabled>Seleziona responsabile</option>
-                                                    {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                                    {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                                 </select>
                                             </td>
                                         </tr>
@@ -539,7 +555,7 @@ const AddOrderForm = (props: Props) => {
                                             <td>
                                                 <select value={LAVres} onChange={e => setLAVres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                                     <option disabled>Seleziona responsabile</option>
-                                                    {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                                    {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                                 </select>
                                             </td>
                                         </tr>
@@ -562,7 +578,7 @@ const AddOrderForm = (props: Props) => {
                                             <td>
                                                 <select value={ASSres} onChange={e => setASSres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                                     <option disabled>Seleziona responsabile</option>
-                                                    {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                                    {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                                 </select>
                                             </td>
                                         </tr>
@@ -585,7 +601,7 @@ const AddOrderForm = (props: Props) => {
                                             <td>
                                                 <select value={IVres} onChange={e => setIVres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                                     <option disabled>Seleziona responsabile</option>
-                                                    {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                                    {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                                 </select>
                                             </td>
                                         </tr>
@@ -608,7 +624,7 @@ const AddOrderForm = (props: Props) => {
                                             <td>
                                                 <select value={IMres} onChange={e => setIMres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                                     <option disabled>Seleziona responsabile</option>
-                                                    {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                                    {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                                 </select>
                                             </td>
                                         </tr>
@@ -631,7 +647,7 @@ const AddOrderForm = (props: Props) => {
                                             <td>
                                                 <select value={TRAres} onChange={e => setTRAres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                                     <option disabled>Seleziona responsabile</option>
-                                                    {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                                    {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                                 </select>
                                             </td>
                                         </tr>
@@ -654,7 +670,7 @@ const AddOrderForm = (props: Props) => {
                                             <td>
                                                 <select value={DELres} onChange={e => setDELres(e.target.value)} required className="select select-xs md:select-md select-bordered">
                                                     <option disabled>Seleziona responsabile</option>
-                                                    {workers.map((worker) => (<option key={worker.value} value={worker.value}>{worker.value}</option>))}
+                                                    {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                                 </select>
                                             </td>
                                         </tr>

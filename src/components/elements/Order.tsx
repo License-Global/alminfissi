@@ -86,7 +86,7 @@ const Order = (props: Props) => {
     const archiveOrder = () => {
         axios.post(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}/archive/${props.orderData._id}`)
             .then(function (response) {
-                if (response.status === 200 || 201) {
+                if (response.status === 200) {
                     notifySuccess('Commessa archiviata con successo');
                 }
                 else {
