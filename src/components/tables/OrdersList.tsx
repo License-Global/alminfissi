@@ -37,6 +37,7 @@ interface Activity {
 
 const OrdersList = () => {
     const [orders, setOrders] = useState<Order[]>([]);
+    const [updateGuardian, setUpdateGuardian] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchOrders = () => {
@@ -61,12 +62,12 @@ const OrdersList = () => {
 
         // Cleanup interval on component unmount
         return () => clearInterval(intervalId);
-    }, []);
+    }, [updateGuardian]);
 
     return (
         <div>
             <div className='flex flex-col gap-7 mt-4'>
-                {orders.length >= 1 ? orders.map((order, index) => <div key={index}><Order orderData={order} /></div>) : <div className='text-center italic'>Nessun ordine presente</div>}
+                {orders.length >= 1 ? orders.map((order, index) => <div key={index}><Order updateGuardian={setUpdateGuardian} orderData={order} /></div>) : <div className='text-center italic'>Nessun ordine presente</div>}
             </div>
         </div>
     );

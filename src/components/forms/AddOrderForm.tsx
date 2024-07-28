@@ -68,16 +68,16 @@ const AddOrderForm = (props: Props) => {
 
     //Note states
 
-    const [RACCNote, setRACCNote] = useState(props.isEdit != true ? "" : props.orderData?.activity.ricezioneAccessori.note);
-    const [RANote, setRANote] = useState(props.isEdit != true ? "" : props.orderData?.activity.ricezioneAlluminio.note);
-    const [RVNote, setRVNote] = useState(props.isEdit != true ? "" : props.orderData?.activity.ricezioneVetri.note);
-    const [TAGNote, setTAGNote] = useState(props.isEdit != true ? "" : props.orderData?.activity.taglio.note);
-    const [LAVNote, setLAVNote] = useState(props.isEdit != true ? "" : props.orderData?.activity.lavorazione.note);
-    const [ASSNote, setASSNote] = useState(props.isEdit != true ? "" : props.orderData?.activity.assemblaggio.note);
-    const [IVNote, setIVNote] = useState(props.isEdit != true ? "" : props.orderData?.activity.installazioneVetri.note);
-    const [IMNote, setIMNote] = useState(props.isEdit != true ? "" : props.orderData?.activity.imballaggio.note);
-    const [TRANote, setTRANote] = useState(props.isEdit != true ? "" : props.orderData?.activity.trasporto.note);
-    const [DELNote, setDELNote] = useState(props.isEdit != true ? "" : props.orderData?.activity.consegnaInstallazione.note);
+    const [RACCNote, setRACCNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.ricezioneAccessori.note);
+    const [RANote, setRANote] = useState(props.isEdit != true ? [] : props.orderData?.activity.ricezioneAlluminio.note);
+    const [RVNote, setRVNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.ricezioneVetri.note);
+    const [TAGNote, setTAGNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.taglio.note);
+    const [LAVNote, setLAVNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.lavorazione.note);
+    const [ASSNote, setASSNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.assemblaggio.note);
+    const [IVNote, setIVNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.installazioneVetri.note);
+    const [IMNote, setIMNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.imballaggio.note);
+    const [TRANote, setTRANote] = useState(props.isEdit != true ? [] : props.orderData?.activity.trasporto.note);
+    const [DELNote, setDELNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.consegnaInstallazione.note);
 
     //Completed states
 

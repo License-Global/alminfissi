@@ -1,17 +1,15 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { status } from '@/utils/enums/status'
-import { IoIosMail } from "react-icons/io";
-import { IoMailOutline } from "react-icons/io5";
 import { differenceInMinutes, differenceInHours, differenceInCalendarDays, differenceInDays } from "date-fns";
 import Timer from './Timer';
-import NoteModal from './NoteModal';
 import { changeStatus, completeActivity } from '@/utils/libs/crud';
 import { toast, ToastContainer } from 'react-toastify';
 import Progress from './OrderElements/Progress';
 import axios from 'axios';
 import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/navigation';
+import Note from './OrderElements/Note';
 
 
 interface Order {
@@ -41,7 +39,7 @@ interface Order {
 interface Activity {
     expire: string;
     status: string;
-    note: string;
+    note: Note[];
     completed: string;
     activityManager: string;
 }
@@ -49,6 +47,7 @@ interface Activity {
 type Props = {
     orderData: Order
     isArchived?: boolean
+    updateGuardian: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Order = (props: Props) => {
@@ -88,6 +87,7 @@ const Order = (props: Props) => {
             .then(function (response) {
                 if (response.status === 200) {
                     notifySuccess('Commessa archiviata con successo');
+                    props.updateGuardian(prevState => !prevState)
                 }
                 else {
                     notifyError('Qualcosa è andato storto, riprova più tardi');
@@ -109,6 +109,7 @@ const Order = (props: Props) => {
             changeStatus(props.orderData._id, 'ricezioneAccessori', event.target.value)
             setRACCstat(event.target.value);
         }
+        props.updateGuardian(prevState => !prevState)
     };
     const handleChangeRAstat = (event: { target: any }) => {
         if (event.target.value === 'Completato') {
@@ -120,6 +121,7 @@ const Order = (props: Props) => {
             changeStatus(props.orderData._id, 'ricezioneAlluminio', event.target.value)
             setRAstat(event.target.value);
         }
+        props.updateGuardian(prevState => !prevState)
     };
     const handleChangeRVstat = (event: { target: any }) => {
         if (event.target.value === 'Completato') {
@@ -131,6 +133,7 @@ const Order = (props: Props) => {
             changeStatus(props.orderData._id, 'ricezioneVetri', event.target.value)
             setRVstat(event.target.value);
         }
+        props.updateGuardian(prevState => !prevState)
     };
     const handleChangeTAGstat = (event: { target: any }) => {
         if (event.target.value === 'Completato') {
@@ -142,6 +145,7 @@ const Order = (props: Props) => {
             changeStatus(props.orderData._id, 'taglio', event.target.value)
             setTAGstat(event.target.value);
         }
+        props.updateGuardian(prevState => !prevState)
     };
     const handleChangeLAVstat = (event: { target: any }) => {
         if (event.target.value === 'Completato') {
@@ -153,6 +157,7 @@ const Order = (props: Props) => {
             changeStatus(props.orderData._id, 'lavorazione', event.target.value)
             setLAVstat(event.target.value);
         }
+        props.updateGuardian(prevState => !prevState)
     };
     const handleChangeASSstat = (event: { target: any }) => {
         if (event.target.value === 'Completato') {
@@ -164,6 +169,7 @@ const Order = (props: Props) => {
             changeStatus(props.orderData._id, 'assemblaggio', event.target.value)
             setASSstat(event.target.value);
         }
+        props.updateGuardian(prevState => !prevState)
     };
     const handleChangeIVstat = (event: { target: any }) => {
         if (event.target.value === 'Completato') {
@@ -175,6 +181,7 @@ const Order = (props: Props) => {
             changeStatus(props.orderData._id, 'installazioneVetri', event.target.value)
             setIVstat(event.target.value);
         }
+        props.updateGuardian(prevState => !prevState)
     };
     const handleChangeIMstat = (event: { target: any }) => {
         if (event.target.value === 'Completato') {
@@ -186,6 +193,7 @@ const Order = (props: Props) => {
             changeStatus(props.orderData._id, 'imballaggio', event.target.value)
             setIMstat(event.target.value);
         }
+        props.updateGuardian(prevState => !prevState)
     };
     const handleChangeTRAstat = (event: { target: any }) => {
         if (event.target.value === 'Completato') {
@@ -197,6 +205,7 @@ const Order = (props: Props) => {
             changeStatus(props.orderData._id, 'trasporto', event.target.value)
             setTRAstat(event.target.value);
         }
+        props.updateGuardian(prevState => !prevState)
     };
     const handleChangeDELstat = (event: { target: any }) => {
         if (event.target.value === 'Completato') {
@@ -208,6 +217,7 @@ const Order = (props: Props) => {
             changeStatus(props.orderData._id, 'consegnaInstallazione', event.target.value)
             setDELstat(event.target.value);
         }
+        props.updateGuardian(prevState => !prevState)
     };
 
     const handleUrgency = () => {
@@ -285,17 +295,7 @@ const Order = (props: Props) => {
 
     return (
         <>
-            <ToastContainer style={{ zIndex: 9999 }} autoClose={3000} pauseOnHover={false} toastClassName={"z-10"} limit={1} />
-            <NoteModal note={props.orderData.activity.ricezioneAccessori.note} id={props.orderData._id} label='Ricezione accessori' activity='ricezioneAccessori' />
-            <NoteModal note={props.orderData.activity.ricezioneAlluminio.note} id={props.orderData._id} label='Ricezione alluminio' activity='ricezioneAlluminio' />
-            <NoteModal note={props.orderData.activity.ricezioneVetri.note} id={props.orderData._id} label='Ricezione vetri' activity='ricezioneVetri' />
-            <NoteModal note={props.orderData.activity.taglio.note} id={props.orderData._id} label='Taglio' activity='taglio' />
-            <NoteModal note={props.orderData.activity.lavorazione.note} id={props.orderData._id} label='Lavorazione' activity='lavorazione' />
-            <NoteModal note={props.orderData.activity.assemblaggio.note} id={props.orderData._id} label='Assemblaggio' activity='assemblaggio' />
-            <NoteModal note={props.orderData.activity.installazioneVetri.note} id={props.orderData._id} label='Installazione vetri' activity='installazioneVetri' />
-            <NoteModal note={props.orderData.activity.imballaggio.note} id={props.orderData._id} label='Imballaggio' activity='imballaggio' />
-            <NoteModal note={props.orderData.activity.trasporto.note} id={props.orderData._id} label='Trasporto' activity='trasporto' />
-            <NoteModal note={props.orderData.activity.consegnaInstallazione.note} id={props.orderData._id} label='Consegna e/o installazione' activity='consegnaInstallazione' />
+            <ToastContainer style={{ zIndex: 9999 }} autoClose={2000} pauseOnHover={false} toastClassName={"z-10"} />
 
             <dialog id="my_modal_1" className="modal">
                 <div className="modal-box">
@@ -369,9 +369,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.ricezioneAccessori.expire, props.orderData.activity.ricezioneAccessori.completed)}</td>
                                     <td>
                                         <div>
-                                            {props?.orderData?.activity?.ricezioneAccessori?.note?.trim() !== '' ?
-                                                <IoIosMail className='cursor-pointer' onClick={() => { (document.getElementById('modal_ricezioneAccessori_' + props.orderData._id) as HTMLDialogElement | null)?.showModal(); }} size={32} /> :
-                                                <IoMailOutline className='cursor-pointer' onClick={() => { (document.getElementById('modal_ricezioneAccessori_' + props.orderData._id) as HTMLDialogElement | null)?.showModal(); }} size={32} />}
+                                            <Note title={"Ricezione accessori"} updateGuardian={props.updateGuardian} activity={"ricezioneAccessori"} orderId={props.orderData._id} notes={props.orderData.activity.ricezioneAccessori.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -392,9 +390,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.ricezioneAlluminio.expire, props.orderData.activity.ricezioneAlluminio.completed)}</td>
                                     <td>
                                         <div>
-                                            {props?.orderData?.activity?.ricezioneAlluminio?.note?.trim() !== '' ?
-                                                <IoIosMail className='cursor-pointer' onClick={() => { (document.getElementById('modal_ricezioneAlluminio_' + props.orderData._id) as HTMLDialogElement | null)?.showModal(); }} size={32} /> :
-                                                <IoMailOutline className='cursor-pointer' onClick={() => { (document.getElementById('modal_ricezioneAlluminio_' + props.orderData._id) as HTMLDialogElement | null)?.showModal(); }} size={32} />}
+                                            <Note title={"Ricezione alluminio"} updateGuardian={props.updateGuardian} activity={"ricezioneAlluminio"} orderId={props.orderData._id} notes={props.orderData.activity.ricezioneAlluminio.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -419,10 +415,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.ricezioneVetri.expire, props.orderData.activity.ricezioneVetri.completed)}</td>
                                     <td>
                                         <div>
-                                            {props?.orderData?.activity?.ricezioneVetri?.note?.trim() !== '' ?
-                                                <IoIosMail className='cursor-pointer' onClick={() => (document.getElementById('modal_ricezioneVetri_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} /> :
-                                                <IoMailOutline className='cursor-pointer' onClick={() => (document.getElementById('modal_ricezioneVetri_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} />
-                                            }
+                                            <Note title={"Ricezione vetri"} updateGuardian={props.updateGuardian} activity={"ricezioneVetri"} orderId={props.orderData._id} notes={props.orderData.activity.ricezioneVetri.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -446,9 +439,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.taglio.expire, props.orderData.activity.taglio.completed)}</td>
                                     <td>
                                         <div>
-                                            {props?.orderData?.activity?.taglio?.note?.trim() !== '' ?
-                                                <IoIosMail className='cursor-pointer' onClick={() => (document.getElementById('modal_taglio_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} /> :
-                                                <IoMailOutline className='cursor-pointer' onClick={() => (document.getElementById('modal_taglio_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} />}
+                                            <Note title={"Taglio"} updateGuardian={props.updateGuardian} activity={"taglio"} orderId={props.orderData._id} notes={props.orderData.activity.taglio.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -471,10 +462,8 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.lavorazione.expire, props.orderData.activity.lavorazione.completed)}</td>
                                     <td>
                                         <div>
-                                            {props?.orderData?.activity?.lavorazione?.note?.trim() !== '' ?
-                                                <IoIosMail className='cursor-pointer' onClick={() => (document.getElementById('modal_lavorazione_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} /> :
-                                                <IoMailOutline className='cursor-pointer' onClick={() => (document.getElementById('modal_lavorazione_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} />
-                                            }</div>
+                                            <Note title={"Lavorazione"} updateGuardian={props.updateGuardian} activity={"lavorazione"} orderId={props.orderData._id} notes={props.orderData.activity.lavorazione.note} />
+                                        </div>
                                     </td>
                                 </tr>
 
@@ -496,10 +485,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.assemblaggio.expire, props.orderData.activity.assemblaggio.completed)}</td>
                                     <td>
                                         <div>
-                                            {props?.orderData?.activity?.assemblaggio?.note?.trim() !== '' ?
-                                                <IoIosMail className='cursor-pointer' onClick={() => (document.getElementById('modal_assemblaggio_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} /> :
-                                                <IoMailOutline className='cursor-pointer' onClick={() => (document.getElementById('modal_assemblaggio_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} />
-                                            }
+                                            <Note title={"Assemblaggio"} updateGuardian={props.updateGuardian} activity={"assemblaggio"} orderId={props.orderData._id} notes={props.orderData.activity.assemblaggio.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -522,11 +508,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.installazioneVetri.expire, props.orderData.activity.installazioneVetri.completed)}</td>
                                     <td>
                                         <div>
-                                            {
-                                                props?.orderData?.activity?.installazioneVetri?.note?.trim() !== '' ?
-                                                    <IoIosMail className='cursor-pointer' onClick={() => (document.getElementById('modal_installazioneVetri_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} /> :
-                                                    <IoMailOutline className='cursor-pointer' onClick={() => (document.getElementById('modal_installazioneVetri_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} />
-                                            }
+                                            <Note title={"Installazione vetri"} updateGuardian={props.updateGuardian} activity={"installazioneVetri"} orderId={props.orderData._id} notes={props.orderData.activity.installazioneVetri.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -549,10 +531,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.imballaggio.expire, props.orderData.activity.imballaggio.completed)}</td>
                                     <td>
                                         <div>
-                                            {props?.orderData?.activity?.imballaggio?.note?.trim() !== '' ?
-                                                <IoIosMail className='cursor-pointer' onClick={() => (document.getElementById('modal_imballaggio_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} /> :
-                                                <IoMailOutline className='cursor-pointer' onClick={() => (document.getElementById('modal_imballaggio_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} />
-                                            }
+                                            <Note title={"Imballaggio"} updateGuardian={props.updateGuardian} activity={"imballaggio"} orderId={props.orderData._id} notes={props.orderData.activity.imballaggio.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -575,10 +554,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.trasporto.expire, props.orderData.activity.trasporto.completed)}</td>
                                     <td>
                                         <div>
-                                            {props?.orderData?.activity?.trasporto?.note?.trim() !== '' ?
-                                                <IoIosMail className='cursor-pointer' onClick={() => (document.getElementById('modal_trasporto_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} /> :
-                                                <IoMailOutline className='cursor-pointer' onClick={() => (document.getElementById('modal_trasporto_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} />
-                                            }
+                                            <Note title={"Trasporto"} updateGuardian={props.updateGuardian} activity={"trasporto"} orderId={props.orderData._id} notes={props.orderData.activity.trasporto.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -603,10 +579,7 @@ const Order = (props: Props) => {
                                     </td>
                                     <td>
                                         <div>
-                                            {props?.orderData?.activity?.consegnaInstallazione?.note?.trim() !== '' ?
-                                                <IoIosMail className='cursor-pointer' onClick={() => (document.getElementById('modal_consegnaInstallazione_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} /> :
-                                                <IoMailOutline className='cursor-pointer' onClick={() => (document.getElementById('modal_consegnaInstallazione_' + props.orderData._id) as HTMLDialogElement | null)?.showModal()} size={32} />
-                                            }
+                                            <Note title={"Consegna e inst."} updateGuardian={props.updateGuardian} activity={"consegnaInstallazione"} orderId={props.orderData._id} notes={props.orderData.activity.consegnaInstallazione.note} />
                                         </div>
                                     </td>
                                 </tr>
