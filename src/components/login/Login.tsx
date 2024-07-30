@@ -41,7 +41,7 @@ const Login = (props: Props) => {
             <ToastContainer limit={1} />
             <div className="hero-content flex-col lg:flex-row-reverse">
                 <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-slate-200">
-                    <Image src={logo} alt='logo' />
+                    <Image priority src={logo} alt='logo' />
                     <form className="card-body" onSubmit={handleSubmit}>
                         <div className="form-control">
                             <label className="label">
