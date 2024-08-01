@@ -33,6 +33,8 @@ export default function Page({ params }: { params: { id: string } }) {
     if (isLoading) {
         return (<div className="flex justify-center"><span className="loading loading-bars loading-lg"></span></div>)
     } else {
-        return (orderData && <Order orderData={orderData} />)
+        return (orderData && <Order orderData={orderData} updateGuardian={function (value: React.SetStateAction<boolean>): void {
+            throw new Error('Function not implemented.');
+        }} />)
     };
 }
