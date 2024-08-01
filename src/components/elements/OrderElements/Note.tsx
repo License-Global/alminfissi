@@ -14,7 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 type Note = {
     content: string;
     date: Date;
-    _id: string;
+    _id?: string;
 };
 
 type Props = {
@@ -73,7 +73,7 @@ const Note = (props: Props) => {
                     </div>
                     <div className="modal-action">
                         <form method="dialog">
-                            <button className="btn">Close</button>
+                            <button className="btn">Chiudi</button>
                         </form>
                     </div>
                 </div>

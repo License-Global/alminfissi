@@ -9,6 +9,7 @@ import Order from '../elements/Order';
 import { registerLocale } from 'react-datepicker';
 import { it } from 'date-fns/locale';
 import { useRouter } from 'next/navigation';
+import NewOrderNote from '../elements/OrderElements/NewOrderNote';
 registerLocale('it', it);
 
 type Props = {
@@ -105,13 +106,14 @@ const AddOrderForm = (props: Props) => {
     const [TRAstat, setTRAstat] = useState(props.isEdit != true ? "Standby" : props.orderData?.activity.trasporto.status);
     const [DELstat, setDELstat] = useState(props.isEdit != true ? "Standby" : props.orderData?.activity.consegnaInstallazione.status);
 
+
+    const [resetSwitch, setResetSwitch] = useState(false)
     const notifySuccess = (text: string) => toast.success(text);
     const notifyError = (text: string) => toast.error(text);
 
     const router = useRouter();
 
-    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handleSubmit = () => {
         if (props.isEdit) {
             axios.patch(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}/orders/${props.orderData?._id}`, orderData)
                 .then(function (response) {
@@ -176,6 +178,18 @@ const AddOrderForm = (props: Props) => {
         setIMres(props.isEdit != true ? "" : props.orderData?.activity.imballaggio.activityManager!);
         setTRAres(props.isEdit != true ? "" : props.orderData?.activity.trasporto.activityManager!);
         setDELres(props.isEdit != true ? "" : props.orderData?.activity.consegnaInstallazione.activityManager!);
+        setRACCNote(props.isEdit != true ? [] : [])
+        setRANote(props.isEdit != true ? [] : [])
+        setRVNote(props.isEdit != true ? [] : [])
+        setTAGNote(props.isEdit != true ? [] : [])
+        setLAVNote(props.isEdit != true ? [] : [])
+        setASSNote(props.isEdit != true ? [] : [])
+        setIVNote(props.isEdit != true ? [] : [])
+        setIMNote(props.isEdit != true ? [] : [])
+        setTRANote(props.isEdit != true ? [] : [])
+        setDELNote(props.isEdit != true ? [] : [])
+
+        setResetSwitch(prevState => !prevState)
     }
 
     const orderData = {
@@ -258,6 +272,35 @@ const AddOrderForm = (props: Props) => {
         },
     };
 
+    const handleNotesChange = (updatedNotes: { date: Date, content: string }[], activity?: string) => {
+        if (activity == "ricezioneAccessori") {
+            setRACCNote(updatedNotes)
+        } else if (activity == "ricezioneAlluminio") {
+            setRANote(updatedNotes)
+        } else if (activity == "ricezioneVetri") {
+            setRVNote(updatedNotes)
+        } else if (activity == "taglio") {
+            setTAGNote(updatedNotes)
+        } else if (activity == "lavorazione") {
+            setLAVNote(updatedNotes)
+        } else if (activity == "assemblaggio") {
+            setASSNote(updatedNotes)
+        } else if (activity == "installazioneVetri") {
+            setIVNote(updatedNotes)
+        } else if (activity == "imballaggio") {
+            setIMNote(updatedNotes)
+        } else if (activity == "trasporto") {
+            setTRANote(updatedNotes)
+        } else if (activity == "consegnaInstallazione") {
+            setDELNote(updatedNotes)
+        }
+    };
+
+    useEffect(() => {
+        console.log(RACCNote, "primo")
+        console.log(RVNote, "terzo")
+        console.log(DELNote, "ultimo")
+    }, [RACCNote, RVNote, DELNote])
 
     return (
         <div>
@@ -278,7 +321,7 @@ const AddOrderForm = (props: Props) => {
                 </div>
             </dialog>
 
-            <form onSubmit={handleSubmit} >
+            <div>
                 <div className=' m-4'>
                     <div className='flex justify-center'>
                         <h2 className=' my-4 text-3xl text-center text-pretty font-semibold'>Dati commessa</h2>
@@ -340,6 +383,7 @@ const AddOrderForm = (props: Props) => {
                                     <th><b>Attività</b></th>
                                     <th><b>Scadenza</b></th>
                                     <th><b>Responsabile</b></th>
+                                    <th><b>Nota</b></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -354,6 +398,9 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
+                                    <td>
+                                        <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Ricezione accessori' activity='ricezioneAccessori' />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="md:text-xl">Ric. alluminio</td>
@@ -365,6 +412,9 @@ const AddOrderForm = (props: Props) => {
                                             <option value="" disabled hidden>Seleziona responsabile</option>
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
+                                    </td>
+                                    <td>
+                                        <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Ricezione alluminio' activity='ricezioneAlluminio' />
                                     </td>
                                 </tr>
                                 <tr>
@@ -378,6 +428,9 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
+                                    <td>
+                                        <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Ricezione vetri' activity='ricezioneVetri' />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="md:text-xl">Taglio</td>
@@ -389,6 +442,9 @@ const AddOrderForm = (props: Props) => {
                                             <option value="" disabled hidden >Seleziona responsabile</option>
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
+                                    </td>
+                                    <td>
+                                        <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Taglio' activity='taglio' />
                                     </td>
                                 </tr>
                                 <tr>
@@ -402,6 +458,9 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
+                                    <td>
+                                        <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Lavorazione' activity='lavorazione' />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="md:text-xl">Assemblaggio</td>
@@ -413,6 +472,9 @@ const AddOrderForm = (props: Props) => {
                                             <option value="" disabled hidden >Seleziona responsabile</option>
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
+                                    </td>
+                                    <td>
+                                        <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Assemblaggio' activity='assemblaggio' />
                                     </td>
                                 </tr>
                                 <tr>
@@ -426,6 +488,9 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
+                                    <td>
+                                        <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Installazione vetri' activity='installazioneVetri' />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="md:text-xl">Imballaggio</td>
@@ -437,6 +502,9 @@ const AddOrderForm = (props: Props) => {
                                             <option value="" disabled hidden >Seleziona responsabile</option>
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
+                                    </td>
+                                    <td>
+                                        <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Imballaggio' activity='imballaggio' />
                                     </td>
                                 </tr>
                                 <tr>
@@ -450,6 +518,9 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
+                                    <td>
+                                        <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Trasporto' activity='trasporto' />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td className="md:text-xl">Consegna/Inst.</td>
@@ -461,6 +532,9 @@ const AddOrderForm = (props: Props) => {
                                             <option value="" disabled hidden >Seleziona responsabile</option>
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
+                                    </td>
+                                    <td>
+                                        <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Consegna/Inst.' activity='consegnaInstallazione' />
                                     </td>
                                 </tr>
                             </tbody>
@@ -683,8 +757,8 @@ const AddOrderForm = (props: Props) => {
                 <div className='flex justify-center md:justify-end my-4 mr-10 gap-4'>
                     <p onClick={() => resetFields()} className='btn btn-warning btn-lg rounded-xl'>Azzera</p>
                     {
-                        props.isEdit ? <button type='submit' className='btn btn-info btn-lg rounded-xl'>Modifica</button> :
-                            <button type='submit' className='btn btn-success btn-lg rounded-xl'>Aggiungi</button>
+                        props.isEdit ? <button onClick={() => handleSubmit()} className='btn btn-info btn-lg rounded-xl'>Modifica</button> :
+                            <button onClick={() => handleSubmit()} className='btn btn-success btn-lg rounded-xl'>Aggiungi</button>
                     }
                     {
                         props.isEdit ? <p className="btn btn-error btn-lg rounded-xl" onClick={() => {
@@ -697,7 +771,7 @@ const AddOrderForm = (props: Props) => {
                         }}>Elimina</p> : null
                     }
                 </div>
-            </form>
+            </div>
         </div>
     )
 }
