@@ -25,6 +25,7 @@ interface Orders {
     orderManager: string;
     note?: string;
     __v: number;
+    time: Date; // Assuming this is the additional Date field you mentioned
 }
 
 interface Activity {
@@ -45,7 +46,15 @@ const OrdersList = () => {
                 .then(response => {
                     const sortedOrders = response.data.sort((a: Orders, b: Orders) => {
                         const priorityOrder: { [key: string]: number } = { 'Bassa': 1, 'Media': 2, 'Alta': 3, 'Urgente': 4 };
-                        return priorityOrder[b.urgency] - priorityOrder[a.urgency]; // Ordine discendente per urgency
+
+                        // First, sort by urgency in descending order
+                        const urgencyComparison = priorityOrder[b.urgency] - priorityOrder[a.urgency];
+                        if (urgencyComparison !== 0) {
+                            return urgencyComparison;
+                        }
+
+                        // Then, sort by time in ascending order
+                        return new Date(a.time).getTime() - new Date(b.time).getTime();
                     });
                     setOrders(sortedOrders);
                 })
@@ -57,7 +66,7 @@ const OrdersList = () => {
         // Fetch orders initially
         fetchOrders();
 
-        // Set interval to fetch orders every minute
+        // Set interval to fetch orders every 30 seconds
         const intervalId = setInterval(fetchOrders, 30000);
 
         // Cleanup interval on component unmount
@@ -67,7 +76,13 @@ const OrdersList = () => {
     return (
         <div>
             <div className='flex flex-col gap-7 mt-4'>
-                {orders.length >= 1 ? orders.map((order, index) => <div key={index}><Order updateGuardian={setUpdateGuardian} orderData={order} /></div>) : <div className='text-center italic'>Nessun ordine presente</div>}
+                {orders.length >= 1 ? orders.map((order, index) => (
+                    <div key={index}>
+                        <Order updateGuardian={setUpdateGuardian} orderData={order} />
+                    </div>
+                )) : (
+                    <div className='text-center italic'>Nessun ordine presente</div>
+                )}
             </div>
         </div>
     );

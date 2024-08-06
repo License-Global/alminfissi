@@ -14,6 +14,10 @@ const NewOrder = (props: Props) => {
     const [accessori, setAccessori] = useState<string>("");
     const [orderManager, setOrderManager] = useState<string>("");
 
+    const [resetController, setResetController] = useState<boolean>(false);
+
+
+
     const [workers, setWorkers] = useState<Worker[]>([]);
     const [activitiesData, setActivitiesData] = useState<{ [key: string]: { activityExpire: Date, activityManager: string, activityNote: string } }>({});
     const orderData = {
@@ -113,13 +117,22 @@ const NewOrder = (props: Props) => {
         setActivitiesData(prevData => ({ ...prevData, [activityTitle]: data }));
     };
 
+    const resetFields = () => {
+        setOrderName("");
+        setMaterialShelf("");
+        setUrgency("");
+        setAccessori("");
+        setOrderManager("");
+        setResetController(prevState => !prevState)
+    }
+
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         axios.post(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}/orders`, orderData)
             .then(function (response) {
                 if (response.status === 201) {
                     notifySuccess("Commessa inserita con successo!")
-                    // resetFields();
+                    resetFields();
                 } else notifyError("Qualcosa è andato storto!")
             })
             .catch(function (error) {
@@ -192,6 +205,7 @@ const NewOrder = (props: Props) => {
                         {activities.map((activity, index) => (
                             <NewOrderActivity
                                 key={index}
+                                resetController={resetController}
                                 activityTitle={activity.label}
                                 activityValue={activity.value}
                                 workers={workers}

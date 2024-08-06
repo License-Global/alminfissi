@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Worker } from '@/utils/types';
 import ReactDatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,11 +8,12 @@ import { it } from 'date-fns/locale';
 type Props = {
     activityTitle: string;
     activityValue: string;
+    resetController: boolean;
     workers: Worker[];
     onDataChange: (activityValue: string, data: { activityExpire: Date, activityManager: string, activityNote: string }) => void;
 }
 
-const NewOrderActivity = ({ activityTitle, activityValue, workers, onDataChange }: Props) => {
+const NewOrderActivity = ({ resetController, activityTitle, activityValue, workers, onDataChange }: Props) => {
     const [activityExpire, setActivityExpire] = useState<Date>(new Date());
     const [activityManager, setActivityManager] = useState<string>("");
     const [activityNote, setActivityNote] = useState<string>("");
@@ -33,6 +34,13 @@ const NewOrderActivity = ({ activityTitle, activityValue, workers, onDataChange 
         setActivityNote(note);
         onDataChange(activityValue, { activityExpire, activityManager, activityNote: note });
     };
+
+    useEffect(() => {
+        setActivityExpire(new Date())
+        setActivityManager("")
+        setActivityNote("")
+    }, [resetController])
+
 
     return (
         <tr>

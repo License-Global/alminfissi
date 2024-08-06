@@ -131,6 +131,31 @@ const EditOrder: React.FC<EditOrderComponentProps> = ({ orderId }) => {
         }
     };
 
+    function getLabelByValue(value: string): string | undefined {
+        if (value === "ricezioneAccessori") {
+            return "Ricezione accessori";
+        } else if (value === "ricezioneAlluminio") {
+            return "Ricezione alluminio";
+        } else if (value === "ricezioneVetri") {
+            return "Ricezione vetri";
+        } else if (value === "taglio") {
+            return "Taglio";
+        } else if (value === "lavorazione") {
+            return "Lavorazione";
+        } else if (value === "assemblaggio") {
+            return "Assemblaggio";
+        } else if (value === "installazioneVetri") {
+            return "Installazione vetri";
+        } else if (value === "imballaggio") {
+            return "Imballaggio";
+        } else if (value === "trasporto") {
+            return "Trasporto";
+        } else if (value === "consegnaInstallazione") {
+            return "Consegna/installazione";
+        } else {
+            return undefined;
+        }
+    }
     if (loading) return <div className='flex h-screen'>
         <span className="mx-auto loading loading-bars loading-lg"></span></div>;
 
@@ -140,7 +165,7 @@ const EditOrder: React.FC<EditOrderComponentProps> = ({ orderId }) => {
                 <ToastContainer autoClose={2000} pauseOnHover={false} toastClassName={"z-10"} />
                 <div className='grid grid-cols-4 gap-8'>
                     <div className="form-control mb-4">
-                        <label className="label">Order Name:</label>
+                        <label className="label">Nome cliente / Numero commessa :</label>
                         <input
                             type="text"
                             name="orderName"
@@ -150,7 +175,7 @@ const EditOrder: React.FC<EditOrderComponentProps> = ({ orderId }) => {
                         />
                     </div>
                     <div className="form-control mb-4">
-                        <label className="label">Material Shelf:</label>
+                        <label className="label">Scaffa stoccaggio:</label>
                         <input
                             type="text"
                             name="materialShelf"
@@ -160,7 +185,7 @@ const EditOrder: React.FC<EditOrderComponentProps> = ({ orderId }) => {
                         />
                     </div>
                     <div className="form-control mb-4">
-                        <label className="label">Accessori:</label>
+                        <label className="label">Scaffa accessori:</label>
                         <input
                             type="text"
                             name="accessori"
@@ -170,7 +195,7 @@ const EditOrder: React.FC<EditOrderComponentProps> = ({ orderId }) => {
                         />
                     </div>
                     <div className="form-control mb-4">
-                        <label className="label">Urgency:</label>
+                        <label className="label">Priorità:</label>
                         <select
                             name="urgency"
                             className="select select-bordered text-xl md:text-lg"
@@ -185,7 +210,7 @@ const EditOrder: React.FC<EditOrderComponentProps> = ({ orderId }) => {
                         </select>
                     </div>
                     <div className="form-control mb-4">
-                        <label className="label">Order Manager:</label>
+                        <label className="label">Responsabile commessa:</label>
                         <select
                             name="orderManager"
                             className="select select-bordered text-xl md:text-lg"
@@ -216,7 +241,7 @@ const EditOrder: React.FC<EditOrderComponentProps> = ({ orderId }) => {
                             {orderData && Object.keys(orderData.activity).map((activityKey) => (
                                 <tr key={activityKey} className='hover:bg-slate-100 max-w-fit'>
                                     <td>
-                                        {activityKey}
+                                        {getLabelByValue(activityKey)}
                                     </td>
                                     <td className='mb-2'>
                                         <ReactDatePicker
