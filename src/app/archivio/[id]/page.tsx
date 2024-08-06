@@ -2,7 +2,6 @@
 import { isAuthenticated } from '@/utils/Auth/Auth';
 import { redirect } from 'next/navigation';
 import React, { useEffect, useLayoutEffect, useState } from 'react'
-import AddOrderForm from '@/components/forms/AddOrderForm';
 import axios from 'axios';
 import Order from '@/components/elements/Order';
 
@@ -19,22 +18,39 @@ export default function Page({ params }: { params: { id: string } }) {
         } else setIsLoading(false);
     }, [])
 
+    // useEffect(() => {
+    //     axios
+    //         .get(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}` + "/archive/" + params.id)
+    //         .then((res) => {
+    //             setOrderData(res.data);
+    //         })
+    //         .catch((err) => {
+    //             console.error(err);
+    //         });
+    // }, [])
+
+    const [updateGuardian, setUpdateGuardian] = useState<boolean>(false);
+
     useEffect(() => {
-        axios
-            .get(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}` + "/archive/" + params.id)
-            .then((res) => {
-                setOrderData(res.data);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    }, [])
+        const fetchOrders = () => {
+            axios.get(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}` + "/archive/" + params.id)
+                .then(response => {
+                    setOrderData(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        };
+
+        fetchOrders();
+
+        const intervalId = setInterval(fetchOrders, 30000);
+        return () => clearInterval(intervalId);
+    }, [updateGuardian]);
 
     if (isLoading) {
         return (<div className="flex justify-center"><span className="loading loading-bars loading-lg"></span></div>)
     } else {
-        return (orderData && <Order orderData={orderData} updateGuardian={function (value: React.SetStateAction<boolean>): void {
-            throw new Error('Function not implemented.');
-        }} />)
+        return (orderData && <Order isArchived orderData={orderData} updateGuardian={setUpdateGuardian} />)
     };
 }

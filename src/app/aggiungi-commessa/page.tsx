@@ -1,5 +1,5 @@
 'use client'
-import AddOrderForm from '@/components/forms/AddOrderForm';
+import NewOrder from '@/components/forms/NewOrder';
 import { isAuthenticated } from '@/utils/Auth/Auth';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -45,7 +45,7 @@ const Page = (props: Props) => {
     if (isLoading) {
         return (<div className="flex justify-center"><span className="loading loading-bars loading-lg"></span></div>)
     } else {
-        return (<div className="flex justify-center flex-col"><AddOrderForm isEdit={false} /></div>)
+        return (<div><NewOrder /></div>)
     };
 }
 

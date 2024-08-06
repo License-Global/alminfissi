@@ -10,6 +10,8 @@ import axios from 'axios';
 import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/navigation';
 import Note from './OrderElements/Note';
+import { format } from "date-fns";
+
 
 
 interface Order {
@@ -27,6 +29,7 @@ interface Order {
         consegnaInstallazione: Activity;
     };
     _id: string;
+    time: string;
     orderName: string;
     materialShelf: string;
     accessori: string;
@@ -319,6 +322,10 @@ const Order = (props: Props) => {
                         <p className=' text-center text-lg'>{props.orderData.orderName}</p>
                     </div>
                     <div>
+                        <p className='font-bold'>Data commessa</p>
+                        <p className=' text-center text-lg'>{new Date(props.orderData.time).toLocaleDateString('it-IT', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' })}</p>
+                    </div>
+                    <div>
                         <p className='font-bold'>Priorità</p>
                         <p className=' text-center text-lg'>{props.orderData.urgency}</p>
                     </div>
@@ -369,7 +376,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.ricezioneAccessori.expire, props.orderData.activity.ricezioneAccessori.completed)}</td>
                                     <td>
                                         <div>
-                                            <Note title={"Ricezione accessori"} updateGuardian={props.updateGuardian} activity={"ricezioneAccessori"} orderId={props.orderData._id} notes={props.orderData.activity.ricezioneAccessori.note} />
+                                            <Note isArchived={props.isArchived} title={"Ricezione accessori"} updateGuardian={props.updateGuardian} activity={"ricezioneAccessori"} orderId={props.orderData._id} notes={props.orderData.activity.ricezioneAccessori.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -390,7 +397,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.ricezioneAlluminio.expire, props.orderData.activity.ricezioneAlluminio.completed)}</td>
                                     <td>
                                         <div>
-                                            <Note title={"Ricezione alluminio"} updateGuardian={props.updateGuardian} activity={"ricezioneAlluminio"} orderId={props.orderData._id} notes={props.orderData.activity.ricezioneAlluminio.note} />
+                                            <Note isArchived={props.isArchived} title={"Ricezione alluminio"} updateGuardian={props.updateGuardian} activity={"ricezioneAlluminio"} orderId={props.orderData._id} notes={props.orderData.activity.ricezioneAlluminio.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -415,7 +422,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.ricezioneVetri.expire, props.orderData.activity.ricezioneVetri.completed)}</td>
                                     <td>
                                         <div>
-                                            <Note title={"Ricezione vetri"} updateGuardian={props.updateGuardian} activity={"ricezioneVetri"} orderId={props.orderData._id} notes={props.orderData.activity.ricezioneVetri.note} />
+                                            <Note isArchived={props.isArchived} title={"Ricezione vetri"} updateGuardian={props.updateGuardian} activity={"ricezioneVetri"} orderId={props.orderData._id} notes={props.orderData.activity.ricezioneVetri.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -439,7 +446,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.taglio.expire, props.orderData.activity.taglio.completed)}</td>
                                     <td>
                                         <div>
-                                            <Note title={"Taglio"} updateGuardian={props.updateGuardian} activity={"taglio"} orderId={props.orderData._id} notes={props.orderData.activity.taglio.note} />
+                                            <Note isArchived={props.isArchived} title={"Taglio"} updateGuardian={props.updateGuardian} activity={"taglio"} orderId={props.orderData._id} notes={props.orderData.activity.taglio.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -462,7 +469,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.lavorazione.expire, props.orderData.activity.lavorazione.completed)}</td>
                                     <td>
                                         <div>
-                                            <Note title={"Lavorazione"} updateGuardian={props.updateGuardian} activity={"lavorazione"} orderId={props.orderData._id} notes={props.orderData.activity.lavorazione.note} />
+                                            <Note isArchived={props.isArchived} title={"Lavorazione"} updateGuardian={props.updateGuardian} activity={"lavorazione"} orderId={props.orderData._id} notes={props.orderData.activity.lavorazione.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -485,7 +492,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.assemblaggio.expire, props.orderData.activity.assemblaggio.completed)}</td>
                                     <td>
                                         <div>
-                                            <Note title={"Assemblaggio"} updateGuardian={props.updateGuardian} activity={"assemblaggio"} orderId={props.orderData._id} notes={props.orderData.activity.assemblaggio.note} />
+                                            <Note isArchived={props.isArchived} title={"Assemblaggio"} updateGuardian={props.updateGuardian} activity={"assemblaggio"} orderId={props.orderData._id} notes={props.orderData.activity.assemblaggio.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -508,7 +515,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.installazioneVetri.expire, props.orderData.activity.installazioneVetri.completed)}</td>
                                     <td>
                                         <div>
-                                            <Note title={"Installazione vetri"} updateGuardian={props.updateGuardian} activity={"installazioneVetri"} orderId={props.orderData._id} notes={props.orderData.activity.installazioneVetri.note} />
+                                            <Note isArchived={props.isArchived} title={"Installazione vetri"} updateGuardian={props.updateGuardian} activity={"installazioneVetri"} orderId={props.orderData._id} notes={props.orderData.activity.installazioneVetri.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -531,7 +538,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.imballaggio.expire, props.orderData.activity.imballaggio.completed)}</td>
                                     <td>
                                         <div>
-                                            <Note title={"Imballaggio"} updateGuardian={props.updateGuardian} activity={"imballaggio"} orderId={props.orderData._id} notes={props.orderData.activity.imballaggio.note} />
+                                            <Note isArchived={props.isArchived} title={"Imballaggio"} updateGuardian={props.updateGuardian} activity={"imballaggio"} orderId={props.orderData._id} notes={props.orderData.activity.imballaggio.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -554,7 +561,7 @@ const Order = (props: Props) => {
                                     <td>{handleTargetLabel(props.orderData.activity.trasporto.expire, props.orderData.activity.trasporto.completed)}</td>
                                     <td>
                                         <div>
-                                            <Note title={"Trasporto"} updateGuardian={props.updateGuardian} activity={"trasporto"} orderId={props.orderData._id} notes={props.orderData.activity.trasporto.note} />
+                                            <Note isArchived={props.isArchived} title={"Trasporto"} updateGuardian={props.updateGuardian} activity={"trasporto"} orderId={props.orderData._id} notes={props.orderData.activity.trasporto.note} />
                                         </div>
                                     </td>
                                 </tr>
@@ -579,7 +586,7 @@ const Order = (props: Props) => {
                                     </td>
                                     <td>
                                         <div>
-                                            <Note title={"Consegna e inst."} updateGuardian={props.updateGuardian} activity={"consegnaInstallazione"} orderId={props.orderData._id} notes={props.orderData.activity.consegnaInstallazione.note} />
+                                            <Note isArchived={props.isArchived} title={"Consegna e inst."} updateGuardian={props.updateGuardian} activity={"consegnaInstallazione"} orderId={props.orderData._id} notes={props.orderData.activity.consegnaInstallazione.note} />
                                         </div>
                                     </td>
                                 </tr>

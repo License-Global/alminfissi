@@ -113,9 +113,10 @@ const AddOrderForm = (props: Props) => {
 
     const router = useRouter();
 
-    const handleSubmit = () => {
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
         if (props.isEdit) {
-            axios.patch(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}/orders/${props.orderData?._id}`, orderData)
+            axios.patch(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}/orders/${props.orderData?._id}`, orderDataEdit)
                 .then(function (response) {
                     if (response.status === 200) {
                         notifySuccess("Commessa modificata con successo!")
@@ -125,17 +126,17 @@ const AddOrderForm = (props: Props) => {
                     console.log(error);
                 });
             return;
-        }
-        axios.post(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}/orders`, orderData)
-            .then(function (response) {
-                if (response.status === 201) {
-                    notifySuccess("Commessa inserita con successo!")
-                    resetFields();
-                } else notifyError("Qualcosa è andato storto!")
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        } else
+            axios.post(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}/orders`, orderData)
+                .then(function (response) {
+                    if (response.status === 201) {
+                        notifySuccess("Commessa inserita con successo!")
+                        resetFields();
+                    } else notifyError("Qualcosa è andato storto!")
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
     };
 
     const handleDelete = () => {
@@ -164,9 +165,13 @@ const AddOrderForm = (props: Props) => {
         setImballaggioDate(props.isEdit != true ? new Date() : new Date(props.orderData?.activity.imballaggio.expire!));
         setTransportDate(props.isEdit != true ? new Date() : new Date(props.orderData?.activity.trasporto.expire!));
         setDelivInstDate(props.isEdit != true ? new Date() : new Date(props.orderData?.activity.consegnaInstallazione.expire!));
+
+
         setOrderName(props.isEdit != true ? "" : props.orderData?.orderName!);
         setMaterialShelf(props.isEdit != true ? "" : props.orderData?.materialShelf!);
         setUrgency(props.isEdit != true ? "" : props.orderData?.urgency!);
+
+
         setAccessori(props.isEdit != true ? "" : String(props.orderData?.accessori!));
         setOrderManager(props.isEdit != true ? "" : props.orderData?.orderManager!);
         setRAres(props.isEdit != true ? "" : props.orderData?.activity.ricezioneAlluminio.activityManager!);
@@ -178,21 +183,116 @@ const AddOrderForm = (props: Props) => {
         setIMres(props.isEdit != true ? "" : props.orderData?.activity.imballaggio.activityManager!);
         setTRAres(props.isEdit != true ? "" : props.orderData?.activity.trasporto.activityManager!);
         setDELres(props.isEdit != true ? "" : props.orderData?.activity.consegnaInstallazione.activityManager!);
-        setRACCNote(props.isEdit != true ? [] : [])
-        setRANote(props.isEdit != true ? [] : [])
-        setRVNote(props.isEdit != true ? [] : [])
-        setTAGNote(props.isEdit != true ? [] : [])
-        setLAVNote(props.isEdit != true ? [] : [])
-        setASSNote(props.isEdit != true ? [] : [])
-        setIVNote(props.isEdit != true ? [] : [])
-        setIMNote(props.isEdit != true ? [] : [])
-        setTRANote(props.isEdit != true ? [] : [])
-        setDELNote(props.isEdit != true ? [] : [])
+
+
+        setRACCNote(props.isEdit != true ? [] : props.orderData?.activity.ricezioneAccessori.note)
+        setRANote(props.isEdit != true ? [] : props.orderData?.activity.ricezioneAlluminio.note)
+        setRVNote(props.isEdit != true ? [] : props.orderData?.activity.ricezioneVetri.note)
+        setTAGNote(props.isEdit != true ? [] : props.orderData?.activity.taglio.note)
+        setLAVNote(props.isEdit != true ? [] : props.orderData?.activity.lavorazione.note)
+        setASSNote(props.isEdit != true ? [] : props.orderData?.activity.assemblaggio.note)
+        setIVNote(props.isEdit != true ? [] : props.orderData?.activity.installazioneVetri.note)
+        setIMNote(props.isEdit != true ? [] : props.orderData?.activity.imballaggio.note)
+        setTRANote(props.isEdit != true ? [] : props.orderData?.activity.trasporto.note)
+        setDELNote(props.isEdit != true ? [] : props.orderData?.activity.consegnaInstallazione.note)
 
         setResetSwitch(prevState => !prevState)
     }
 
+    // const [RACCNote, setRACCNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.ricezioneAccessori.note);
+    // const [RANote, setRANote] = useState(props.isEdit != true ? [] : props.orderData?.activity.ricezioneAlluminio.note);
+    // const [RVNote, setRVNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.ricezioneVetri.note);
+    // const [TAGNote, setTAGNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.taglio.note);
+    // const [LAVNote, setLAVNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.lavorazione.note);
+    // const [ASSNote, setASSNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.assemblaggio.note);
+    // const [IVNote, setIVNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.installazioneVetri.note);
+    // const [IMNote, setIMNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.imballaggio.note);
+    // const [TRANote, setTRANote] = useState(props.isEdit != true ? [] : props.orderData?.activity.trasporto.note);
+    // const [DELNote, setDELNote] = useState(props.isEdit != true ? [] : props.orderData?.activity.consegnaInstallazione.note);
+    useEffect(() => {
+        console.log(props.orderData?.activity.ricezioneAccessori.note)
+    }, [props.orderData?.activity.ricezioneAccessori.note])
+
     const orderData = {
+        orderName: orderName,
+        materialShelf: materialShelf,
+        accessori: accessori,
+        urgency: urgency,
+        orderManager: orderManager,
+        activity: {
+            ricezioneAccessori: {
+                expire: ricACCDate,
+                completed: RACCCompleted,
+                status: RACCstat,
+                activityManager: RACCres,
+                note: props.isEdit ? props.orderData?.activity.ricezioneAccessori.note : RACCNote
+            },
+            ricezioneAlluminio: {
+                expire: ricAllDate,
+                completed: RACompleted,
+                status: RAstat,
+                activityManager: RAres,
+                note: props.isEdit ? props.orderData?.activity.ricezioneAlluminio.note : RANote
+            },
+            ricezioneVetri: {
+                expire: ricVetDate,
+                completed: RVCompleted,
+                status: RVstat,
+                activityManager: RVres,
+                note: props.isEdit ? props.orderData?.activity.ricezioneVetri : RVNote
+            },
+            taglio: {
+                expire: taglioDate,
+                completed: TAGCompleted,
+                status: TAGstat,
+                activityManager: TAGRes,
+                note: props.isEdit ? props.orderData?.activity.taglio : TAGNote
+            },
+            lavorazione: {
+                expire: lavorazioneDate,
+                completed: LAVCompleted,
+                status: LAVstat,
+                activityManager: LAVres,
+                note: props.isEdit ? props.orderData?.activity.lavorazione : LAVNote
+            },
+            assemblaggio: {
+                expire: assemblaggioDate,
+                comma: ASSCompleted,
+                status: ASSstat,
+                activityManager: ASSres,
+                note: props.isEdit ? props.orderData?.activity.assemblaggio : ASSNote
+            },
+            installazioneVetri: {
+                expire: instVetri,
+                completed: IVCompleted,
+                status: IVstat,
+                activityManager: IVres,
+                note: props.isEdit ? props.orderData?.activity.installazioneVetri : IVNote
+            },
+            imballaggio: {
+                expire: imballaggioDate,
+                completed: IMCompleted,
+                status: IMstat,
+                activityManager: IMres,
+                note: props.isEdit ? props.orderData?.activity.imballaggio : IMNote
+            },
+            trasporto: {
+                expire: transportDate,
+                completed: TRACompleted,
+                status: TRAstat,
+                activityManager: TRAres,
+                note: props.isEdit ? props.orderData?.activity.trasporto : TRANote
+            },
+            consegnaInstallazione: {
+                expire: delivInstDate,
+                completed: DELCompleted,
+                status: DELstat,
+                activityManager: DELres,
+                note: props.isEdit ? props.orderData?.activity.consegnaInstallazione : DELNote
+            },
+        },
+    };
+    const orderDataEdit = {
         orderName: orderName,
         materialShelf: materialShelf,
         accessori: accessori,
@@ -211,63 +311,54 @@ const AddOrderForm = (props: Props) => {
                 completed: RACompleted,
                 status: RAstat,
                 activityManager: RAres,
-                note: RANote
             },
             ricezioneVetri: {
                 expire: ricVetDate,
                 completed: RVCompleted,
                 status: RVstat,
                 activityManager: RVres,
-                note: RVNote
             },
             taglio: {
                 expire: taglioDate,
                 completed: TAGCompleted,
                 status: TAGstat,
                 activityManager: TAGRes,
-                note: TAGNote
             },
             lavorazione: {
                 expire: lavorazioneDate,
                 completed: LAVCompleted,
                 status: LAVstat,
                 activityManager: LAVres,
-                note: LAVNote
             },
             assemblaggio: {
                 expire: assemblaggioDate,
                 comma: ASSCompleted,
                 status: ASSstat,
                 activityManager: ASSres,
-                note: ASSNote
             },
             installazioneVetri: {
                 expire: instVetri,
                 completed: IVCompleted,
                 status: IVstat,
                 activityManager: IVres,
-                note: IVNote
             },
             imballaggio: {
                 expire: imballaggioDate,
                 completed: IMCompleted,
                 status: IMstat,
                 activityManager: IMres,
-                note: IMNote
             },
             trasporto: {
                 expire: transportDate,
                 completed: TRACompleted,
                 status: TRAstat,
                 activityManager: TRAres,
-                note: TRANote
             },
             consegnaInstallazione: {
                 expire: delivInstDate,
                 completed: DELCompleted,
                 status: DELstat,
                 activityManager: DELres,
-                note: DELNote
             },
         },
     };
@@ -296,15 +387,10 @@ const AddOrderForm = (props: Props) => {
         }
     };
 
-    useEffect(() => {
-        console.log(RACCNote, "primo")
-        console.log(RVNote, "terzo")
-        console.log(DELNote, "ultimo")
-    }, [RACCNote, RVNote, DELNote])
-
     return (
         <div>
-            <ToastContainer limit={1} />
+            <ToastContainer style={{ zIndex: 9999 }} autoClose={2000} pauseOnHover={false} toastClassName={"z-10"} />
+
             {/* //Modal */}
             <dialog id="my_modal_1" className="modal">
                 <div className="modal-box">
@@ -321,7 +407,7 @@ const AddOrderForm = (props: Props) => {
                 </div>
             </dialog>
 
-            <div>
+            <form onSubmit={handleSubmit}>
                 <div className=' m-4'>
                     <div className='flex justify-center'>
                         <h2 className=' my-4 text-3xl text-center text-pretty font-semibold'>Dati commessa</h2>
@@ -383,7 +469,7 @@ const AddOrderForm = (props: Props) => {
                                     <th><b>Attività</b></th>
                                     <th><b>Scadenza</b></th>
                                     <th><b>Responsabile</b></th>
-                                    <th><b>Nota</b></th>
+                                    <th className={`${props.isEdit ? "hidden" : ""}`}><b>Nota</b></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -398,7 +484,7 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
-                                    <td>
+                                    <td className={`${props.isEdit ? "hidden" : ""}`}>
                                         <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Ricezione accessori' activity='ricezioneAccessori' />
                                     </td>
                                 </tr>
@@ -413,7 +499,7 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
-                                    <td>
+                                    <td className={`${props.isEdit ? "hidden" : ""}`}>
                                         <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Ricezione alluminio' activity='ricezioneAlluminio' />
                                     </td>
                                 </tr>
@@ -428,7 +514,7 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
-                                    <td>
+                                    <td className={`${props.isEdit ? "hidden" : ""}`}>
                                         <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Ricezione vetri' activity='ricezioneVetri' />
                                     </td>
                                 </tr>
@@ -443,7 +529,7 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
-                                    <td>
+                                    <td className={`${props.isEdit ? "hidden" : ""}`}>
                                         <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Taglio' activity='taglio' />
                                     </td>
                                 </tr>
@@ -458,7 +544,7 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
-                                    <td>
+                                    <td className={`${props.isEdit ? "hidden" : ""}`}>
                                         <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Lavorazione' activity='lavorazione' />
                                     </td>
                                 </tr>
@@ -473,7 +559,7 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
-                                    <td>
+                                    <td className={`${props.isEdit ? "hidden" : ""}`}>
                                         <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Assemblaggio' activity='assemblaggio' />
                                     </td>
                                 </tr>
@@ -488,7 +574,7 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
-                                    <td>
+                                    <td className={`${props.isEdit ? "hidden" : ""}`}>
                                         <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Installazione vetri' activity='installazioneVetri' />
                                     </td>
                                 </tr>
@@ -503,7 +589,7 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
-                                    <td>
+                                    <td className={`${props.isEdit ? "hidden" : ""}`}>
                                         <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Imballaggio' activity='imballaggio' />
                                     </td>
                                 </tr>
@@ -518,7 +604,7 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
-                                    <td>
+                                    <td className={`${props.isEdit ? "hidden" : ""}`}>
                                         <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Trasporto' activity='trasporto' />
                                     </td>
                                 </tr>
@@ -533,7 +619,7 @@ const AddOrderForm = (props: Props) => {
                                             {workers.map((worker) => (<option key={worker.workerName} value={worker.workerName}>{worker.workerName}</option>))}
                                         </select>
                                     </td>
-                                    <td>
+                                    <td className={`${props.isEdit ? "hidden" : ""}`}>
                                         <NewOrderNote resetSwitch={resetSwitch} onNotesChange={handleNotesChange} title='Consegna/Inst.' activity='consegnaInstallazione' />
                                     </td>
                                 </tr>
@@ -757,8 +843,8 @@ const AddOrderForm = (props: Props) => {
                 <div className='flex justify-center md:justify-end my-4 mr-10 gap-4'>
                     <p onClick={() => resetFields()} className='btn btn-warning btn-lg rounded-xl'>Azzera</p>
                     {
-                        props.isEdit ? <button onClick={() => handleSubmit()} className='btn btn-info btn-lg rounded-xl'>Modifica</button> :
-                            <button onClick={() => handleSubmit()} className='btn btn-success btn-lg rounded-xl'>Aggiungi</button>
+                        props.isEdit ? <button type='submit' className='btn btn-info btn-lg rounded-xl'>Modifica</button> :
+                            <button type='submit' className='btn btn-success btn-lg rounded-xl'>Aggiungi</button>
                     }
                     {
                         props.isEdit ? <p className="btn btn-error btn-lg rounded-xl" onClick={() => {
@@ -771,7 +857,7 @@ const AddOrderForm = (props: Props) => {
                         }}>Elimina</p> : null
                     }
                 </div>
-            </div>
+            </form>
         </div>
     )
 }

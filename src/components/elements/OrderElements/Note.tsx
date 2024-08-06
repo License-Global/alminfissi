@@ -1,12 +1,12 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale'
 import { IoIosMail } from "react-icons/io";
 import { IoMailOutline } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa";
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -20,6 +20,7 @@ type Note = {
 type Props = {
     activity?: string;
     title: string;
+    isArchived?: boolean;
     orderId?: string;
     notes: Note[];
     updateGuardian: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,25 +28,21 @@ type Props = {
 
 const Note = (props: Props) => {
     const [nuovaNota, setNuovaNota] = useState("");
-    const notifySuccess = (text: string) => toast.success(text);
-    const notifyError = (text: string) => toast.error(text);
-
     const handleAggiungiNota = () => {
         if (nuovaNota) {
-            axios.patch(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}/orders/${props.orderId}/${props.activity}/note`, {
+            axios.patch(`${process.env.NEXT_PUBLIC_LUNA_BASE_URL}/${props.isArchived ? 'archive' : 'orders'}/${props.orderId}/${props.activity}/note`, {
                 content: nuovaNota
             })
                 .then(function (response) {
                     if (response.status === 200) {
-                        notifySuccess("Nota inserita con successo!")
                         setNuovaNota("")
                         props.updateGuardian(prevState => !prevState)
-                    } else notifyError("Qualcosa è andato storto!")
+                    }
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-        } else notifyError("Testo mancante!")
+        }
         return;
     }
     return (
