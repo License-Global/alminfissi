@@ -107,6 +107,9 @@ const Order = (props: Props) => {
             completeActivity(props.orderData._id, 'ricezioneAccessori')
             changeStatus(props.orderData._id, 'ricezioneAccessori', event.target.value)
             setRACCstat(event.target.value);
+            setTimeout(() => {
+                props.updateGuardian(prevState => !prevState);
+            }, 2000);
 
         } else {
             changeStatus(props.orderData._id, 'ricezioneAccessori', event.target.value)
@@ -119,6 +122,9 @@ const Order = (props: Props) => {
             completeActivity(props.orderData._id, 'ricezioneAlluminio')
             changeStatus(props.orderData._id, 'ricezioneAlluminio', event.target.value)
             setRAstat(event.target.value);
+            setTimeout(() => {
+                props.updateGuardian(prevState => !prevState);
+            }, 2000);
 
         } else {
             changeStatus(props.orderData._id, 'ricezioneAlluminio', event.target.value)
@@ -131,6 +137,9 @@ const Order = (props: Props) => {
             completeActivity(props.orderData._id, 'ricezioneVetri')
             changeStatus(props.orderData._id, 'ricezioneVetri', event.target.value)
             setRVstat(event.target.value);
+            setTimeout(() => {
+                props.updateGuardian(prevState => !prevState);
+            }, 2000);
 
         } else {
             changeStatus(props.orderData._id, 'ricezioneVetri', event.target.value)
@@ -143,6 +152,9 @@ const Order = (props: Props) => {
             completeActivity(props.orderData._id, 'taglio')
             changeStatus(props.orderData._id, 'taglio', event.target.value)
             setTAGstat(event.target.value);
+            setTimeout(() => {
+                props.updateGuardian(prevState => !prevState);
+            }, 2000);
 
         } else {
             changeStatus(props.orderData._id, 'taglio', event.target.value)
@@ -155,6 +167,9 @@ const Order = (props: Props) => {
             completeActivity(props.orderData._id, 'lavorazione')
             changeStatus(props.orderData._id, 'lavorazione', event.target.value)
             setLAVstat(event.target.value);
+            setTimeout(() => {
+                props.updateGuardian(prevState => !prevState);
+            }, 2000);
 
         } else {
             changeStatus(props.orderData._id, 'lavorazione', event.target.value)
@@ -167,6 +182,9 @@ const Order = (props: Props) => {
             completeActivity(props.orderData._id, 'assemblaggio')
             changeStatus(props.orderData._id, 'assemblaggio', event.target.value)
             setASSstat(event.target.value);
+            setTimeout(() => {
+                props.updateGuardian(prevState => !prevState);
+            }, 2000);
 
         } else {
             changeStatus(props.orderData._id, 'assemblaggio', event.target.value)
@@ -179,6 +197,9 @@ const Order = (props: Props) => {
             completeActivity(props.orderData._id, 'installazioneVetri')
             changeStatus(props.orderData._id, 'installazioneVetri', event.target.value)
             setIVstat(event.target.value);
+            setTimeout(() => {
+                props.updateGuardian(prevState => !prevState);
+            }, 2000);
 
         } else {
             changeStatus(props.orderData._id, 'installazioneVetri', event.target.value)
@@ -191,6 +212,9 @@ const Order = (props: Props) => {
             completeActivity(props.orderData._id, 'imballaggio')
             changeStatus(props.orderData._id, 'imballaggio', event.target.value)
             setIMstat(event.target.value);
+            setTimeout(() => {
+                props.updateGuardian(prevState => !prevState);
+            }, 2000);
 
         } else {
             changeStatus(props.orderData._id, 'imballaggio', event.target.value)
@@ -203,6 +227,9 @@ const Order = (props: Props) => {
             completeActivity(props.orderData._id, 'trasporto')
             changeStatus(props.orderData._id, 'trasporto', event.target.value)
             setTRAstat(event.target.value);
+            setTimeout(() => {
+                props.updateGuardian(prevState => !prevState);
+            }, 2000);
 
         } else {
             changeStatus(props.orderData._id, 'trasporto', event.target.value)
@@ -215,6 +242,9 @@ const Order = (props: Props) => {
             completeActivity(props.orderData._id, 'consegnaInstallazione')
             changeStatus(props.orderData._id, 'consegnaInstallazione', event.target.value)
             setDELstat(event.target.value);
+            setTimeout(() => {
+                props.updateGuardian(prevState => !prevState);
+            }, 2000);
 
         } else {
             changeStatus(props.orderData._id, 'consegnaInstallazione', event.target.value)
